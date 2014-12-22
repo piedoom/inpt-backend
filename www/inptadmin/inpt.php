@@ -5,6 +5,7 @@ require_once('config.php');
 class Inpt
 {
 	var $config = null;
+	var $inpt_blocks_cache = array();
 
 	function Inpt()
 	{
@@ -29,6 +30,12 @@ class Inpt
 
 	function get_inpt($html)
 	{
+		//Lazy loading
+		if (isset($this->inpt_blocks_cache[hash('sha256', $html)]))
+		{
+			return $this->inpt_blocks_cache[hash('sha256', $html)];
+		}
+
 		$dom = new DOMDocument;
 		$dom->preserveWhiteSpace = true;
 		$dom->formatOutput = true;
@@ -80,6 +87,9 @@ class Inpt
 				}
 			}
 		}
+
+		//Cache for later
+		$this->inpt_blocks_cache[hash('sha256', $html)] = $inptNodes;
 
 		return $inptNodes;
 	}
