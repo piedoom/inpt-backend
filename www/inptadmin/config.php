@@ -6,3 +6,6 @@ $inpt_conf['BASE_DIR'] = '..';
 
 //So Inpt doesn't scan itself unnecessarily
 $inpt_conf['ADMIN_DIR'] = 'inptadmin';
+
+//Play nicely with Windows
+$inpt_conf['DIR_SEPARATOR'] = '/';
