@@ -36,9 +36,10 @@ class Inpt
 	function get_inpt($html)
 	{
 		//Lazy loading
-		if (isset($this->inpt_blocks_cache[hash('sha256', $html)]))
+		$htmlhash = hash('sha256', $html);
+		if (isset($this->inpt_blocks_cache[$htmlhash]))
 		{
-			return $this->inpt_blocks_cache[hash('sha256', $html)];
+			return $this->inpt_blocks_cache[$htmlhash];
 		}
 
 		$dom = new DOMDocument;
@@ -63,22 +64,20 @@ class Inpt
 					}
 					else
 					{
-						if (isset($innerNode->attributes) && null != ($innerNode->attributes->getNamedItem('class')))
+						if (isset($innerNode->attributes) && @$innerNode->attributes->getNamedItem('class')->nodeValue == 'inpt')
 						{
-							if ($innerNode->attributes->getNamedItem('class')->nodeValue == 'inpt')
+							$inpt_node = new InptBlock();
+
+							if ($comment != null)
 							{
-								$inpt_node = new InptBlock();
-
-								if ($comment != null)
-								{
-									$inpt_node->metadata = $this->parse_metadata($comment);
-									$inpt_node->name = isset($inpt_node->metadata['inpt-title']) ? $inpt_node->metadata['inpt-title'] : "";
-								}
-
-								$inpt_node->contents = $innerNode->nodeValue;
-
-								$inptNodes[] = $inpt_node;
+								$inpt_node->metadata = $this->parse_metadata($comment);
+								$node_title = @$inpt_node->metadata['inpt-title'];
+								$inpt_node->name = $node_title ? $node_title : "";
 							}
+
+							$inpt_node->contents = $innerNode->nodeValue;
+
+							$inptNodes[] = $inpt_node;
 						}
 
 						if ($innerNode->nodeName != '#text')
@@ -91,7 +90,7 @@ class Inpt
 		}
 
 		//Cache for later
-		$this->inpt_blocks_cache[hash('sha256', $html)] = $inptNodes;
+		$this->inpt_blocks_cache[$htmlhash] = $inptNodes;
 
 		return $inptNodes;
 	}
@@ -120,7 +119,8 @@ class Inpt
 
 	function parse_metadata($str)
 	{
-		$str = trim($str, '<>!-');
+		//Remove characters used in the comment format accepted by Inpt
+		$str = trim($str, '<!->'); 
 		$metadata = array();
 		$str = explode("\n", $str);
 
