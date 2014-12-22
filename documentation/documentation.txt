@@ -1,0 +1,70 @@
+more will be added in a better format later.  for now, here are some things to keep in mind.
+edit to fix problems/wrong info.
+
+
+###############
+setting up a document
+##############
+
+setting up a document MUST require the following to function properly:
+- <!Doctype ****> value declared on the FIRST LINE of the document, before anything
+
+
+
+##############
+editable classes
+##############
+
+-classes that should be editable should be specified with the 'inpt' class.  this can be changed to any other valid class if there are conflicts
+
+editable DOM elements with the 'inpt' class can optionally have the following
+- an HTML comment including extra data
+- Code will gather ANY comment before the DOM element
+- comment MUST be before or after the initial editable DOM element, before any other editable DOM element 
+- comment can be on same line before or after, or any amount of lines before or after editable DOM element
+
+*****************************************
+acceptable examples:
+
+
+<div class="inpt"> 
+	This text is editable!
+</div>
+
+-----------------------------------------
+
+<!-- inpt-title: This is the UI Title -->
+<div class="inpt"> 
+	This text is editable!
+</div>
+
+-----------------------------------------
+
+<div class="inpt"> 
+<!-- inpt-title: This is the UI Title -->
+	This text is editable!
+</div>
+
+-----------------------------------------
+
+<!-- inpt-title: This is the UI Title -->
+<img class="inpt"/>
+
+-----------------------------------------
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+unacceptable examples:
+
+<div class="inpt"> 
+	This text is editable!
+	<!-- inpt-title: This is the UI Title -->
+</div>
+
+-----------------------------------------
+
+<div class="inpt"> 
+	This text is editable!
+</div>
+<!-- inpt-title: This is the UI Title -->
+
+-----------------------------------------
