@@ -1,6 +1,11 @@
 <?php
 
-require_once('config.php');
+$required_files = array('config.php', 'inptblock.php');
+
+foreach ($required_files as $required_file)
+{
+	require_once($required_file);
+}
 
 class Inpt
 {
@@ -58,24 +63,21 @@ class Inpt
 					}
 					else
 					{
-						if (isset($innerNode->attributes))
+						if (isset($innerNode->attributes) && null != ($innerNode->attributes->getNamedItem('class')))
 						{
-							if (null != ($innerNode->attributes->getNamedItem('class')))
+							if ($innerNode->attributes->getNamedItem('class')->nodeValue == 'inpt')
 							{
-								if ($innerNode->attributes->getNamedItem('class')->nodeValue == 'inpt')
+								$inpt_node = new InptBlock();
+
+								if ($comment != null)
 								{
-									$inpt_node = new InptBlock();
-
-									if ($comment != null)
-									{
-										$inpt_node->metadata = $this->parse_metadata($comment);
-										$inpt_node->name = isset($inpt_node->metadata['inpt-title']) ? $inpt_node->metadata['inpt-title'] : "";
-									}
-
-									$inpt_node->contents = $innerNode->nodeValue;
-
-									$inptNodes[] = $inpt_node;
+									$inpt_node->metadata = $this->parse_metadata($comment);
+									$inpt_node->name = isset($inpt_node->metadata['inpt-title']) ? $inpt_node->metadata['inpt-title'] : "";
 								}
+
+								$inpt_node->contents = $innerNode->nodeValue;
+
+								$inptNodes[] = $inpt_node;
 							}
 						}
 
@@ -101,7 +103,7 @@ class Inpt
 
 		foreach ($structure as $element)
 		{
-			$full_name = sprintf('%s/%s', $dir, $element);
+			$full_name = sprintf('%s%s%s', $dir, $this->config['DIR_SEPARATOR'], $element);
 
 			if (is_file($full_name))
 			{
@@ -144,7 +146,7 @@ class Inpt
 		{
 
 			//Figure out page_name
-			$filepath = explode('/', $file);
+			$filepath = explode($this->config['DIR_SEPARATOR'], $file);
 			$filename = $filepath[count($filepath) - 1];
 			$filefolder = $filepath[count($filepath) - 2];
 
@@ -190,12 +192,16 @@ class Inpt
 }
 
 
-class InptBlock
-{
-	var $name = "";
-	var $contents = "";
-	var $metadata = array();
-}
-
 $inpt = new Inpt();
-$files = $inpt->output_json();
+
+switch (@$_GET['mode']) {
+
+	case 'post':
+		//TODO: Handle postback
+		break;
+	
+	default:
+		$inpt->output_json();
+		break;
+
+}
