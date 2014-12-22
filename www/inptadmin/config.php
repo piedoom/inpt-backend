@@ -1,5 +1,6 @@
 <?php
 
+include('runcheck.php');
 
 //Leave as .. if the Inpt backend is installed to the same directory as your site
 $inpt_conf['BASE_DIR'] = '..';

@@ -1,10 +1,10 @@
 <?php
 
-$required_files = array('config.php', 'inptblock.php');
+$required_files = array('runnable', 'config', 'inptblock', 'runcheck');
 
 foreach ($required_files as $required_file)
 {
-	require_once($required_file);
+	require_once(sprintf('%s.php', $required_file));
 }
 
 class Inpt
