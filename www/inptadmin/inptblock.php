@@ -8,4 +8,5 @@ class InptBlock
 	var $name = "";
 	var $contents = "";
 	var $metadata = array();
+	var $identifier = "";
 }

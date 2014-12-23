@@ -76,6 +76,7 @@ class Inpt
 							}
 
 							$inpt_node->contents = $innerNode->nodeValue;
+							$inpt_node->identifier = hash('sha256', serialize($inpt_node));
 
 							$inptNodes[] = $inpt_node;
 						}
